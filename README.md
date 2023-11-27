@@ -9,6 +9,7 @@ This repository provides code for our CVPR 2023 paper "[Revisiting the P3P Probl
 ### Code ###
 
 This code is based on the benchmark code of [lambdatwist-p3p.](https://github.com/midjji/lambdatwist-p3p)
+
 An Eigen implementation can be found https://github.com/vlarsson/PoseLib
 
 ### Reference ###
