@@ -14,11 +14,11 @@ An Eigen implementation can be found https://github.com/vlarsson/PoseLib
 
 ### Reference ###
 
-@inproceedings{ding2023revisiting,
-  title={Revisiting the P3P Problem},
-  author={Ding, Yaqing and Yang, Jian and Larsson, Viktor and Olsson, Carl and {\AA}str{\"o}m, Kalle},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  pages={4872--4880},
-  year={2023}
-}
+    @inproceedings{ding2023revisiting,
+      title={Revisiting the P3P Problem},
+      author={Ding, Yaqing and Yang, Jian and Larsson, Viktor and Olsson, Carl and {\AA}str{\"o}m, Kalle},
+      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+      pages={4872--4880},
+      year={2023}
+    }
 
