@@ -14,11 +14,11 @@ An Eigen implementation can be found https://github.com/vlarsson/PoseLib
 
 ### Reference ###
 
-    @inproceedings{ding2021globally,
-    title={Globally optimal relative pose estimation with gravity prior},
-    author={Ding, Yaqing and Barath, Daniel and Yang, Jian and Kong, Hui and Kukelova, Zuzana},
-    booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-    pages={394--403},
-    year={2021}
-    }
+@inproceedings{ding2023revisiting,
+  title={Revisiting the P3P Problem},
+  author={Ding, Yaqing and Yang, Jian and Larsson, Viktor and Olsson, Carl and {\AA}str{\"o}m, Kalle},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={4872--4880},
+  year={2023}
+}
 
