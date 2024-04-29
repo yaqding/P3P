@@ -33,14 +33,6 @@ int P3Pnokano::computePoses2(const Eigen::Matrix3d &feature_vectors, const Eigen
     X.col(2) = world_points.col(1);
   }
 
-  // X << 6.372128806034315,   5.886639242500653,   6.580690647757176,
-  // -3.341587203940217,  -7.288502622030681,  -6.485629473034364,
-  // -3.051115166053172,  -0.935537653287725,  -4.159753868407890;
-
-  // m << 0.037352777709554,  -0.272521601802160,  -0.267453042344912,
-  // -0.143878618227865,   0.192707027051953,  -0.140540751728212,
-  //  0.988890142136234,   0.942653689472429,   0.953266577219678;
-
   X21 = X.col(1) - X.col(0);
   X31 = X.col(2) - X.col(0);
 
@@ -96,35 +88,6 @@ int P3Pnokano::computePoses2(const Eigen::Matrix3d &feature_vectors, const Eigen
   {
     y(i) = -((f(0) * x(i) + f(3)) * x(i) + f(5)) / (f(4) + f(1) * x(i));
   }
-
-  // Eigen::VectorXd x2 = x.array() * x.array();
-  // Eigen::VectorXd xy = x.array() * y.array();
-  // Eigen::VectorXd y2 = y.array() * y.array();
-
-  // Eigen::VectorXd fv = f(0) * x2.array() + f(1) * xy.array() + f(3) * x.array() + f(4) * y.array() + f(5);
-  // Eigen::VectorXd gv = g(0) * x2.array() - y2.array() + g(3) * x.array() + g(4) * y.array() + g(5);
-
-  // Eigen::VectorXd dfdx = 2 * f(0) * x.array() + f(1) * y.array() + f(3);
-  // Eigen::VectorXd dfdy = f(1) * x.array() + f(4);
-  // Eigen::VectorXd dgdx = 2 * g(0) * x.array() + g(3);
-  // Eigen::VectorXd dgdy = -2 * y.array() + g(4);
-
-  // Eigen::VectorXd inv_detJ = 1 / (dfdx.cwiseProduct(dgdy) - dfdy.cwiseProduct(dgdx)).array();
-
-  // Eigen::VectorXd dx = (dgdy.cwiseProduct(fv) - dfdy.cwiseProduct(gv)).cwiseProduct(inv_detJ);
-  // Eigen::VectorXd dy = (-dgdx.cwiseProduct(fv) + dfdx.cwiseProduct(gv)).cwiseProduct(inv_detJ);
-
-  // for (int i = 0; i < nsols; ++i)
-  // {
-  //   if (std::abs(fv(i)) < 1e-15 && std::abs(gv(i)) < 1e-15)
-  //   {
-  //     dx(i) = 0;
-  //     dy(i) = 0;
-  //   }
-  // }
-
-  // x = x - dx;
-  // y = y - dy;
 
   Eigen::Matrix3d A;
   A.col(0) = -mc0;
@@ -201,15 +164,6 @@ int P3Pnokano::solveQuartic2(const Eigen::Matrix<double, 5, 1> &factors, Eigen::
   std::complex<double> w = sqrt(alpha + 2.0 * y);
 
   std::complex<double> temp;
-
-  // temp = -B / (4.0 * A) + 0.5 * (w + sqrt(-(3.0 * alpha + 2.0 * y + 2.0 * beta / w)));
-  // real_roots(0) = temp.real();
-  // temp = -B / (4.0 * A) + 0.5 * (w - sqrt(-(3.0 * alpha + 2.0 * y + 2.0 * beta / w)));
-  // real_roots(1) = temp.real();
-  // temp = -B / (4.0 * A) + 0.5 * (-w + sqrt(-(3.0 * alpha + 2.0 * y - 2.0 * beta / w)));
-  // real_roots(2) = temp.real();
-  // temp = -B / (4.0 * A) + 0.5 * (-w - sqrt(-(3.0 * alpha + 2.0 * y - 2.0 * beta / w)));
-  // real_roots(3) = temp.real();
 
   int i = 0;
   real_roots << 0, 0, 0, 0;
