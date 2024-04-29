@@ -18,7 +18,7 @@ template<class T, int iterations>
  * For unknown reasons it always works for the correct solution, but not always for the other solutions!
  *
  */
-void gauss_newton_refineL_new(Vector3<T>& L,
+void gauss_newton_refineL_ding(Vector3<T>& L,
                           T a12, T a13, T a23,
                           T b12, T b13, T b23 ){
 

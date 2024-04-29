@@ -2,19 +2,19 @@
 #include <utils/cvl/matrix.h>
 #include <vector>
 #include <data.h>
-namespace kneip2{
+namespace nakano{
 
 
 
 
 template<class T>
-int kneip_p3p_fair2(const cvl::Data<T>& data,
+int nakano_p3p_fair(const cvl::Data<T>& data,
                    cvl::Vector<cvl::Matrix<T,3,3>,4>& Rs,
                    cvl::Vector<cvl::Vector3<T>,4>& Ts){
 
     Eigen::Matrix<Eigen::Matrix<double, 3, 4>, 4, 1>  solutions;
 
-    P3P2::computePoses2(data.getFeatureVectors(),data.getWorldPoints(),solutions);
+    P3Pnokano::computePoses2(data.getFeatureVectors(),data.getWorldPoints(),solutions);
 
 
 
@@ -38,4 +38,4 @@ int kneip_p3p_fair2(const cvl::Data<T>& data,
     return sols;
 }
 
-}// end namespace kneip
+}// end namespace nakano

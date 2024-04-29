@@ -1,23 +1,17 @@
-
-
 #include "benchmark.h"
-
 #include "lambdatwist/lambdatwist.p3p.h"
-#include "new/new.p3p.h"
-#include "new/new.p3p_direct.h"
-#include "new/new.p3p_method1.h"
-#include "new/new.p3p_method2.h"
+#include "ding/ding_direct.h"
+#include "ding/ding_null.h"
+#include "ding/ding_adjoint.h"
 #include "kneip/kneip.h"
-#include "kneip/kneip2.h"
+#include "kneip/nakano.h"
 #include "utils/mlibtime.h"
 #include <ke/ke.h>
-// #include "/home/ding/lund/lambdatwist/jp/jp.h"
-// #include "/home/ding/lund/lambdatwist/jp/jp_utils.h"
 #include <p3p_generator.h>
 #include <ke/ke_utils.h>
 #include <data.h>
 #include <kneip/kneip_utils.h>
-#include <kneip/kneip_utils2.h>
+#include <kneip/nakano_utils.h>
 
 #include "utils/string_helpers.h"
 
@@ -106,13 +100,13 @@ namespace mlib
         };
 
         template <class T>
-        class KneipSolver2
+        class nakanoSolver
         {
         public:
             int solve(Data<T> &data, cvl::Vector<Matrix<T, 3, 3>, 4> &Rs,
                       cvl::Vector<Vector<T, 3>, 4> &Ts)
             {
-                return kneip2::kneip_p3p_fair2(data, Rs, Ts);
+                return nakano::nakano_p3p_fair(data, Rs, Ts);
             }
             std::string get_name() { return "nakano"; }
         };
@@ -133,7 +127,7 @@ namespace mlib
         };
 
         template <class T>
-        class NewSolver
+        class dingSolver
         {
         public:
             int solve(Data<T> &data, cvl::Vector<Matrix<T, 3, 3>, 4> &Rs,
@@ -142,13 +136,13 @@ namespace mlib
 
                 Vector3<Vector3<T>> yss = data.xr;
                 Vector3<Vector3<T>> xss = data.x0;
-                return p3p_new(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
+                return p3p_ding(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
             }
-            std::string get_name() { return "New"; }
+            std::string get_name() { return "ding"; }
         };
 
         template <class T>
-        class NewSolverd
+        class dingSolverd
         {
         public:
             int solve(Data<T> &data, cvl::Vector<Matrix<T, 3, 3>, 4> &Rs,
@@ -157,13 +151,13 @@ namespace mlib
 
                 Vector3<Vector3<T>> yss = data.xr;
                 Vector3<Vector3<T>> xss = data.x0;
-                return p3p_new_direct(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
+                return p3p_ding_direct(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
             }
             std::string get_name() { return "direct"; }
         };
 
         template <class T>
-        class NewSolver1
+        class dingSolver1
         {
         public:
             int solve(Data<T> &data, cvl::Vector<Matrix<T, 3, 3>, 4> &Rs,
@@ -172,13 +166,13 @@ namespace mlib
 
                 Vector3<Vector3<T>> yss = data.xr;
                 Vector3<Vector3<T>> xss = data.x0;
-                return p3p_new_method1(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
+                return p3p_ding_null(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
             }
-            std::string get_name() { return "method1"; }
+            std::string get_name() { return "null"; }
         };
 
         template <class T>
-        class NewSolver2
+        class dingSolver2
         {
         public:
             int solve(Data<T> &data, cvl::Vector<Matrix<T, 3, 3>, 4> &Rs,
@@ -187,9 +181,9 @@ namespace mlib
 
                 Vector3<Vector3<T>> yss = data.xr;
                 Vector3<Vector3<T>> xss = data.x0;
-                return p3p_new_method2(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
+                return p3p_ding_adjoint(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
             }
-            std::string get_name() { return "method2"; }
+            std::string get_name() { return "adjoint"; }
         };
 
         // verification of answers can be made slowly, so...
@@ -202,9 +196,6 @@ namespace mlib
             P3PResult res(S.get_name(), datas.size());
 
             std::ofstream outFile;
-            //打开文件
-            // outFile.open("/home/ding/Documents/Test.txt",std::ios::app);
-            // outFile << 11111 <<"\n";
 
             for (Data<T> &data : datas)
             {
@@ -220,34 +211,6 @@ namespace mlib
                 if (sols == 0)
                     res.no_solution++;
 
-                // if(sols==0)
-                // {
-
-                //     Vector3<Vector3<T>> yss=data.xr;
-                //     Vector3<Vector3<T>> xss=data.x0;
-
-                //     Pose<T> Pt = data.P;
-                //     Vector3<T> tgt=Pt.t;
-                //     Vector3<T> yss0 = yss[0]; Vector3<T> yss1 = yss[1]; Vector3<T> yss2 = yss[2];
-                //     Vector3<T> xss0 = xss[0]; Vector3<T> xss1 = xss[1]; Vector3<T> xss2 = xss[2];
-                //     cout.precision(17);
-                //     // cout<<"error:"<<error<<endl;
-                //     cout<<"data:"<<yss0(0)<<" "<<yss0(1)<<" "<<yss0(2)<<" "<<xss0(0)<<" "<<xss0(1)<<" "<<xss0(2)<<endl;
-
-                //     cout<<"data:"<<yss1(0)<<" "<<yss1(1)<<" "<<yss1(2)<<" "<<xss1(0)<<" "<<xss1(1)<<" "<<xss1(2)<<endl;
-
-                //     cout<<"data:"<<yss2(0)<<" "<<yss2(1)<<" "<<yss2(2)<<" "<<xss2(0)<<" "<<xss2(1)<<" "<<xss2(2)<<endl;
-                //     cout<<"sols:"<<sols<<endl;
-                //     cout<<"gt:"<<tgt(0)<<" " << tgt(1)<<" " << tgt(2)<<endl;
-
-                //     for(int ii=0; ii<valid; ii++)
-                //     {
-                //         Vector3<T> Ts1=Ts[ii];
-                //         cout<<"T:"<<Ts1(0)<<" "<<Ts1(1)<<" "<<Ts1(2)<<endl;
-                //     }
-
-                // }
-
                 if (valid > sols)
                     res.incorrect_valid += (valid - sols);
 
@@ -256,37 +219,10 @@ namespace mlib
 
                 T error = data.min_error(Rs, Ts, valid);
 
-                // outFile << error <<"\n";
-
                 res.errors.push_back(error);
                 if (error < error_limit)
                     res.ground_truth_in_set++;
-                // else
-                // {
-                // Vector3<Vector3<T>> yss=data.xr;
-                // Vector3<Vector3<T>> xss=data.x0;
 
-                // Pose<T> Pt = data.P;
-                // Vector3<T> tgt=Pt.t;
-                //     Vector3<T> yss0 = yss[0]; Vector3<T> yss1 = yss[1]; Vector3<T> yss2 = yss[2];
-                //     Vector3<T> xss0 = xss[0]; Vector3<T> xss1 = xss[1]; Vector3<T> xss2 = xss[2];
-                //     cout.precision(17);
-                //     cout<<"error:"<<error<<endl;
-                //     cout<<"data:"<<yss0(0)<<" "<<yss0(1)<<" "<<yss0(2)<<" "<<xss0(0)<<" "<<xss0(1)<<" "<<xss0(2)<<endl;
-
-                //     cout<<"data:"<<yss1(0)<<" "<<yss1(1)<<" "<<yss1(2)<<" "<<xss1(0)<<" "<<xss1(1)<<" "<<xss1(2)<<endl;
-
-                //     cout<<"data:"<<yss2(0)<<" "<<yss2(1)<<" "<<yss2(2)<<" "<<xss2(0)<<" "<<xss2(1)<<" "<<xss2(2)<<endl;
-                //     cout<<"sols:"<<sols<<endl;
-                // cout<<"gt:"<<tgt(0)<<" " << tgt(1)<<" " << tgt(2)<<endl;
-
-                //     for(int ii=0; ii<valid; ii++)
-                //     {
-                //         Vector3<T> Ts1=Ts[ii];
-                //         cout<<"T:"<<Ts1(0)<<" "<<Ts1(1)<<" "<<Ts1(2)<<endl;
-                //     }
-
-                // }
             }
             outFile.close();
             return res;
@@ -299,18 +235,16 @@ namespace mlib
             cout << "Beginning Test: " << endl;
             T error_limit = 1e-6;
 
-            // P3PResult newp3p = compute_accuracy<T,NewSolver<T>>(NewSolver<T>(),datas,error_limit);
-            P3PResult newp3p_direct = compute_accuracy<T, NewSolverd<T>>(NewSolverd<T>(), datas, error_limit);
-            P3PResult newp3p_method1 = compute_accuracy<T, NewSolver1<T>>(NewSolver1<T>(), datas, error_limit);
-            P3PResult newp3p_method2 = compute_accuracy<T, NewSolver2<T>>(NewSolver2<T>(), datas, error_limit);
+            P3PResult dingp3p_direct = compute_accuracy<T, dingSolverd<T>>(dingSolverd<T>(), datas, error_limit);
+            P3PResult dingp3p_null = compute_accuracy<T, dingSolver1<T>>(dingSolver1<T>(), datas, error_limit);
+            P3PResult dingp3p_adjoint = compute_accuracy<T, dingSolver2<T>>(dingSolver2<T>(), datas, error_limit);
             P3PResult lambda = compute_accuracy<T,LambdaSolver<T>>(LambdaSolver<T>(),datas,error_limit);
             P3PResult ke = compute_accuracy<T,KeSolver<T>>(KeSolver<T>(),datas,error_limit);
             P3PResult kneip= compute_accuracy<T,KneipSolver<T>>(KneipSolver<T>(),datas,error_limit);
-            P3PResult kneip2= compute_accuracy<T,KneipSolver2<T>>(KneipSolver2<T>(),datas,error_limit);
+            P3PResult nakano= compute_accuracy<T,nakanoSolver<T>>(nakanoSolver<T>(),datas,error_limit);
 
             // make the result table
-            std::vector<P3PResult> res = {newp3p_direct, newp3p_method1, newp3p_method2,lambda,ke,kneip,kneip2};
-            // std::vector<P3PResult> res={newp3p,lambda,ke,kneip,kneip2};
+            std::vector<P3PResult> res = {dingp3p_direct, dingp3p_null, dingp3p_adjoint,lambda,ke,kneip,nakano};
             std::vector<std::string> headers;
             std::vector<std::string> columns;
             std::vector<std::vector<std::string>> rows;
@@ -399,29 +333,27 @@ namespace mlib
 
         template <class T>
         void versus(const std::vector<Data<T>> &datas,
-                    int repeat_versus = 2,
+                    int repeat_versus = 5,
                     bool inner_timers = false)
         {
 
             cout << "Beginning Versus" << endl;
 
             Timer kneip("Kneip: ", datas.size());
-            Timer kneip2("nakano: ", datas.size());
-            Timer ns("newsolver: ", datas.size());
+            Timer nakano("nakano: ", datas.size());
             Timer lt("Lambda: ", datas.size());
             Timer kes("ke ", datas.size());
             Timer nsd("direct: ", datas.size());
             Timer ns1("m1: ", datas.size());
             Timer ns2("m2: ", datas.size());
 
-            Timer tot_new("New Total");
             Timer tot_lambda("Lambda Total");
             Timer tot_kes("ke Total");
             Timer tot_kneip("Kneip Total");
-            Timer tot_kneip2("nakano Total");
-            Timer tot_newd("direct Total");
-            Timer tot_new1("m1 Total");
-            Timer tot_new2("m2 Total");
+            Timer tot_nakano("nakano Total");
+            Timer tot_dingd("ding_direct Total");
+            Timer tot_ding1("ding_null Total");
+            Timer tot_ding2("ding_adjoint Total");
 
             // dont opt away
             int sols = 0;
@@ -447,21 +379,21 @@ namespace mlib
 
                     tot_kneip.toc();
                 }
-                // kneip2
+                // nakano
                 if(dokneip){
 
-                    tot_kneip2.tic();
+                    tot_nakano.tic();
                     for(uint i=0;i<datas.size();++i){
                         //if(inner_timers){if(i==100){                kneip.clear();            }kneip.tic();}
 
                         cvl::Vector<Matrix<T,3,3>,4> Rs;
                         cvl::Vector<Vector<T,3>,4> Ts;
-                        sols+= kneip2::kneip_p3p_fair2(datas[i],Rs, Ts);
+                        sols+= nakano::nakano_p3p_fair(datas[i],Rs, Ts);
 
                         //    if(inner_timers)kneip.toc();
                     }
 
-                    tot_kneip2.toc();
+                    tot_nakano.toc();
                 }
                 if(dokneip){
                     tot_kes.tic();
@@ -476,23 +408,8 @@ namespace mlib
                     }
                     tot_kes.toc();
                 }
-                // {
-                //     tot_new.tic();
-                //     for (uint i = 0; i < datas.size(); ++i)
-                //     {
-                //         //    if(inner_timers) {if(i==100){                lt.clear();            }            lt.tic();}
-                //         cvl::Vector<Matrix<T, 3, 3>, 4> Rs;
-                //         cvl::Vector<Vector<T, 3>, 4> Ts;
-                //         Data<T> data = datas[i];
-                //         Vector3<Vector<T, 3>> yss = data.xr;
-                //         Vector3<Vector<T, 3>> xss = data.x0;
-                //         sols += p3p_new(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
-                //         //  if(inner_timers)lt.toc();
-                //     }
-                //     tot_new.toc();
-                // }
                 {
-                    tot_newd.tic();
+                    tot_dingd.tic();
                     for (uint i = 0; i < datas.size(); ++i)
                     {
                         //    if(inner_timers) {if(i==100){                lt.clear();            }            lt.tic();}
@@ -501,13 +418,13 @@ namespace mlib
                         Data<T> data = datas[i];
                         Vector3<Vector<T, 3>> yss = data.xr;
                         Vector3<Vector<T, 3>> xss = data.x0;
-                        sols += p3p_new_direct(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
+                        sols += p3p_ding_direct(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
                         //  if(inner_timers)lt.toc();
                     }
-                    tot_newd.toc();
+                    tot_dingd.toc();
                 }
                 {
-                    tot_new1.tic();
+                    tot_ding1.tic();
                     for (uint i = 0; i < datas.size(); ++i)
                     {
                         //    if(inner_timers) {if(i==100){                lt.clear();            }            lt.tic();}
@@ -516,13 +433,13 @@ namespace mlib
                         Data<T> data = datas[i];
                         Vector3<Vector<T, 3>> yss = data.xr;
                         Vector3<Vector<T, 3>> xss = data.x0;
-                        sols += p3p_new_method1(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
+                        sols += p3p_ding_null(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
                         //  if(inner_timers)lt.toc();
                     }
-                    tot_new1.toc();
+                    tot_ding1.toc();
                 }
                 {
-                    tot_new2.tic();
+                    tot_ding2.tic();
                     for (uint i = 0; i < datas.size(); ++i)
                     {
                         //    if(inner_timers) {if(i==100){                lt.clear();            }            lt.tic();}
@@ -531,10 +448,10 @@ namespace mlib
                         Data<T> data = datas[i];
                         Vector3<Vector<T, 3>> yss = data.xr;
                         Vector3<Vector<T, 3>> xss = data.x0;
-                        sols += p3p_new_method2(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
+                        sols += p3p_ding_adjoint(yss[0], yss[1], yss[2], xss[0], xss[1], xss[2], Rs, Ts);
                         //  if(inner_timers)lt.toc();
                     }
-                    tot_new2.toc();
+                    tot_ding2.toc();
                 }
                 {
                     tot_lambda.tic();
@@ -551,10 +468,10 @@ namespace mlib
                     tot_lambda.toc();
                 }
 
-                std::vector<mlib::Timer> tots = {tot_new, tot_lambda, tot_kes, tot_kneip, tot_kneip2,tot_newd,tot_new1,tot_new2};
+                std::vector<mlib::Timer> tots = {tot_lambda, tot_kes, tot_kneip, tot_nakano,tot_dingd,tot_ding1,tot_ding2};
 
                 printtimers();
-                std::vector<mlib::Timer> ts = {ns, lt, kes, kneip, kneip2,nsd,ns1,ns2};
+                std::vector<mlib::Timer> ts = {lt, kes, kneip, nakano,nsd,ns1,ns2};
                 cout << tots << endl
                      << "wrote the ts" << endl;
             }
@@ -583,15 +500,6 @@ namespace mlib
                 }
                 {
                     auto ts = kes.getTimes();
-                    for (Time time : ts)
-                    {
-
-                        out << (int)(time.ns) << ", ";
-                    }
-                    out << "\n";
-                }
-                {
-                    auto ts = ns.getTimes();
                     for (Time time : ts)
                     {
 

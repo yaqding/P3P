@@ -1,7 +1,7 @@
-#include "kneip/kneip2.h"
+#include "kneip/nakano.h"
 #include <iostream>
 
-int P3P2::computePoses2(const Eigen::Matrix3d &feature_vectors, const Eigen::Matrix3d &world_points,
+int P3Pnokano::computePoses2(const Eigen::Matrix3d &feature_vectors, const Eigen::Matrix3d &world_points,
                       Eigen::Matrix<Eigen::Matrix<double, 3, 4>, 4, 1> &solutions)
 {
   // Extraction of world points
@@ -84,7 +84,7 @@ int P3P2::computePoses2(const Eigen::Matrix3d &feature_vectors, const Eigen::Mat
 
   Eigen::Matrix<double, 4, 1> xxx;
 
-  int nsols = P3P2::solveQuartic2(h, xxx);
+  int nsols = P3Pnokano::solveQuartic2(h, xxx);
   Eigen::VectorXd x = Eigen::VectorXd::Zero(nsols, 1);
   for (int i = 0; i < nsols; ++i)
   {
@@ -164,7 +164,7 @@ int P3P2::computePoses2(const Eigen::Matrix3d &feature_vectors, const Eigen::Mat
   return 0;
 }
 
-int P3P2::solveQuartic2(const Eigen::Matrix<double, 5, 1> &factors, Eigen::Matrix<double, 4, 1> &real_roots)
+int P3Pnokano::solveQuartic2(const Eigen::Matrix<double, 5, 1> &factors, Eigen::Matrix<double, 4, 1> &real_roots)
 {
   double A = factors(0);
   double B = factors(1);

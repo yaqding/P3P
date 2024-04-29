@@ -60,8 +60,8 @@
  *
  */
 #pragma once
-#ifndef P3P2_H_
-#define P3P2_H_
+#ifndef P3Pnokano_H_
+#define P3Pnokano_H_
 
 #include <Eigen/Dense>
 #include <math.h>
@@ -82,7 +82,7 @@
  *
  *
  */
-class P3P2
+class P3Pnokano
 {
 public:
 

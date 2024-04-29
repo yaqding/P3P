@@ -1,10 +1,10 @@
+
 #pragma once
 
 #include <lambdatwist/solve_cubic.h>
 #include <lambdatwist/solve_eig0.h>
 #include <lambdatwist/refine_lambda.h>
 #include <lambdatwist/p3p_timers.h>
-#include <new/solve_cubic_new.h>
 
 
 

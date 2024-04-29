@@ -1,15 +1,14 @@
 #pragma once
 
-#include <new/solve_cubic_new.h>
-#include <new/solve_eig0_new.h>
-#include <new/refine_lambda_new.h>
-#include <new/p3p_timers_new.h>
+#include <ding/solve_cubic_ding.h>
+#include <ding/refine_lambda_ding.h>
+#include <lambdatwist/p3p_timers.h>
 
 namespace cvl
 {
 
     template <class T, int refinement_iterations = 5>
-    int p3p_new_method2(Vector3<T> y1,
+    int p3p_ding_null(Vector3<T> y1,
                 Vector3<T> y2,
                 Vector3<T> y3,
                 Vector3<T> x1,
@@ -116,103 +115,18 @@ namespace cvl
         T A22 = g * (a13 - a23) - a12;
 
 
-        // Matrix<T, 2, 2> Aiv(A01, A02,
-        //                   A11, A12);
-        // Vector2d Ab(-A00,-A01);
-        // Vector2d yz = Aiv.inverse()*Ab;
-        // Vector3<T> Bp;
-        // Bp(0) = 1; Bp(1) = yz(0); Bp(2) = yz(1);
-        // Bp.normalize();
-        // Bp = Bp*std::sqrt(A01*A01+A02*A02+A12*A12-A00*A11-A00*A22-A22*A11);
-
-        // Matrix<T, 3, 2> lm;
-
-        // if (std::abs(A00) >= std::abs(A11) && std::abs(A00) > std::abs(A22))
-        // {
-        //     T co0 = 1.0/A00;
-        //     T co1 = A01*co0;
-        //     T co2 = A02*co0;
-        //     T co3 = A11*co0;
-        //     T co4 = A12*co0;
-        //     T del = std::sqrt(co1*co1-co3);
-
-        //     lm(0, 0) = 1.0;
-        //     lm(1, 0) = co1+del;
-        //     lm(2, 0) = (lm(1, 0)*co2-co4)/del;
-        //     lm(0, 1) = 1.0;
-        //     lm(1, 1) = co1-del;
-        //     lm(2, 1) = 2*co2-lm(2, 0);
-
-        // }
-        // else if (std::abs(A11) >= std::abs(A00) && std::abs(A11) > std::abs(A22))
-        // {
-        //     T co0 = 1.0/A11;
-        //     T co1 = A01*co0;
-        //     T co2 = A12*co0;
-        //     T co3 = A00*co0;
-        //     T co4 = A02*co0;
-        //     T del = std::sqrt(co1*co1-co3);
-
-        //     lm(0, 0) = co1+del;
-        //     lm(1, 0) = 1.0;
-        //     lm(2, 0) = (lm(0, 0)*co2-co4)/del;
-        //     lm(0, 1) = co1-del;
-        //     lm(1, 1) = 1.0;
-        //     lm(2, 1) = 2*co2-lm(2, 0);
-
-        // }
-        // else
-        // {
-        //     T co0 = 1.0/A22;
-        //     T co1 = A02*co0;
-        //     T co2 = A12*co0;
-        //     T co3 = A00*co0;
-        //     T co4 = A01*co0;
-        //     T del = std::sqrt(co1*co1-co3);
-
-        //     lm(0, 0) = co1+del;
-        //     lm(1, 0) = (lm(0, 0)*co2-co4)/del;
-        //     lm(2, 0) = 1.0;
-        //     lm(0, 1) = co1-del;
-        //     lm(1, 1) = 2*co2-lm(1, 0);
-        //     lm(2, 1) = 1.0;
-        // }
-
+        Matrix<T, 2, 2> Aiv(A01, A02,
+                          A11, A12);
+        Vector2d Ab(-A00,-A01);
+        Vector2d yz = Aiv.inverse()*Ab;
+        Vector3<T> Bp;
+        Bp(0) = 1; Bp(1) = yz(0); Bp(2) = yz(1);
+        Bp.normalize();
+        Bp = Bp*std::sqrt(A01*A01+A02*A02+A12*A12-A00*A11-A00*A22-A22*A11);
 
         Matrix<T, 3, 3> A(A00, A01, A02,
                           A01, A11, A12,
                           A02, A12, A22);
-
-        T B00 = -A11 * A22 + A12 * A12;
-        T B01 = -A12 * A02 + A01 * A22;
-        T B02 = -A01 * A12 + A11 * A02;
-        T B11 = -A00 * A22 + A02 * A02;
-        T B12 = -A01 * A02 + A00 * A12;
-        T B22 = -A00 * A11 + A01 * A01;
-
-        Vector3<T> Bp;
-        T Bm;
-        if (B00 >= B11 && B00 >= B22)
-        {
-            Bm = 1.0 / std::sqrt(B00);
-            Bp(0) = B00 * Bm;
-            Bp(1) = B01 * Bm;
-            Bp(2) = B02 * Bm;
-        }
-        else if (B11 > B00 && B11 > B22)
-        {
-            Bm = 1.0 / std::sqrt(B11);
-            Bp(0) = B01 * Bm;
-            Bp(1) = B11 * Bm;
-            Bp(2) = B12 * Bm;
-        }
-        else
-        {
-            Bm = 1.0 / std::sqrt(B22);
-            Bp(0) = B02 * Bm;
-            Bp(1) = B12 * Bm;
-            Bp(2) = B22 * Bm;
-        }
 
         Matrix<T, 3, 3> Mp;
         Mp = Bp.crossMatrix();
@@ -324,12 +238,9 @@ namespace cvl
                 }
             }
 
-            // if (c < -1.0e-26 && )
             if (valid>0 && dc > 0.000000001) 
-                // std::cout << dc <<" :" << valid <<std::endl;
                 break;
 
-            // if(valid>0 && sigma_p<0) break;
         }
 
 
@@ -343,7 +254,7 @@ namespace cvl
 
         for (int i = 0; i < valid; ++i)
         {
-            gauss_newton_refineL_new<T, refinement_iterations>(Ls[i], a12, a13, a23, b12, b13, b23);
+            gauss_newton_refineL_ding<T, refinement_iterations>(Ls[i], a12, a13, a23, b12, b13, b23);
         }
         TOC(lt6);
 
