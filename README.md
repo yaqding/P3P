@@ -12,6 +12,12 @@ This repository provides code for our CVPR 2023 paper "[Revisiting the P3P Probl
     > cmake ..
     > make -j8
 
+### Results
+![Screenshot from 2024-04-29 22-38-00](https://github.com/yaqding/P3P/assets/56595403/5c778512-4d23-43a2-af8d-b16588dde4ec)
+![Screenshot from 2024-04-29 22-37-31](https://github.com/yaqding/P3P/assets/56595403/54aa5a55-920d-471e-8582-471a1b50e3e6)
+
+The proposed methods are named Direct, Null, and Adjoint, with Adjoint being recommended (method 2 in the paper, it has been refined).
+
 ### Code ###
 
 This code is based on the benchmark code of [lambdatwist-p3p.](https://github.com/midjji/lambdatwist-p3p)
