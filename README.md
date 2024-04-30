@@ -5,6 +5,10 @@ This repository provides code for our CVPR 2023 paper "[Revisiting the P3P Probl
 ### Dependencies ###
 
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
+- This code is based on the benchmark code of [lambdatwist-p3p.](https://github.com/midjji/lambdatwist-p3p)
+
+- An Eigen implementation can be found https://github.com/vlarsson/PoseLib.
+The latest implementation based on Eigen3 is available at [Eigen3 implementation.](https://github.com/PoseLib/PoseLib/pull/93)
 
 ### Compile
 
@@ -17,13 +21,6 @@ This repository provides code for our CVPR 2023 paper "[Revisiting the P3P Probl
 ![Screenshot from 2024-04-29 22-37-31](https://github.com/yaqding/P3P/assets/56595403/54aa5a55-920d-471e-8582-471a1b50e3e6)
 
 The proposed methods are named Direct, Null, and Adjoint, with Adjoint being recommended (method 2 in the paper, it has been refined).
-
-### Code ###
-
-This code is based on the benchmark code of [lambdatwist-p3p.](https://github.com/midjji/lambdatwist-p3p)
-
-An Eigen implementation can be found https://github.com/vlarsson/PoseLib
-The latest implementation based on Eigen3 is available at [Eigen3 implementation.](https://github.com/PoseLib/PoseLib/pull/93)
 
 ### Reference ###
 
