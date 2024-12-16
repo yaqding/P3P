@@ -7,8 +7,9 @@ This repository provides code for our CVPR 2023 paper "[Revisiting the P3P Probl
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - This code is based on the benchmark code of [lambdatwist-p3p.](https://github.com/midjji/lambdatwist-p3p)
 
-- An Eigen implementation can be found https://github.com/vlarsson/PoseLib.
-The latest implementation based on Eigen3 is available at [Eigen3 implementation.](https://github.com/PoseLib/PoseLib/pull/93)
+- An Eigen implementation can be found at [Poselib.](https://github.com/PoseLib/PoseLib/blob/master/PoseLib/solvers/p3p.cc)
+
+- The mex function for matlab is in the fold matlab/
 
 ### Compile
 

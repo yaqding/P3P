@@ -1,4 +1,4 @@
-% mex solver_p3p.cpp %(Require Eigen3) comment this line after completed
+mex solver_p3p.cpp %(Require Eigen3) comment this line after completed
 clc;
 clear;
 X = rand(3,3);
